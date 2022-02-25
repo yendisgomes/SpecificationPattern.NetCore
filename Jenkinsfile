@@ -1,18 +1,29 @@
 pipeline {
   agent any
+  
   stages {
-    stage('Build') {
+    stage ('Clean workspace') {
       steps {
-        echo 'Jenkins Pipeline'
+        cleanWs()
       }
     }
 
-    stage('error') {
+    stage ('Git Checkout') {
       steps {
-        bat 'dotnet restore'
-        bat 'dotnet build'
+      git branch: 'main', credentialsId: 'admin123', url: 'https://github.com/yendisgomes/SpecificationPattern.NetCore.git'
+     }
+    }
+    
+    stage('Restore packages') {
+      steps {
+      bat "dotnet restore ${workspace}\\SpecificationPattern.NetCore\\SpecificationPattern.NetCore.sln"
       }
     }
-
-  }
+    
+    stage('Clean') {
+      steps {
+      bat "msbuild.exe ${workspace}\\SpecificationPattern.NetCore\\SpecificationPattern.NetCore.sln" /nologo /nr:false /p:platform=\"x64\" /p:configuration=\"release\" /t:clean"
+      }
+    }
+  
 }
