@@ -7,5 +7,12 @@ pipeline {
       }
     }
 
+    stage('') {
+      steps {
+        sh 'dotnet restore'
+        sh 'dotnet build'
+      }
+    }
+
   }
 }
